@@ -14,11 +14,12 @@ refs.searchForm.addEventListener('submit', sendSearch);
 
 function sendSearch(e) {
     e.preventDefault();
-    
     apiServicePixabey.resetPage();
  const inputData = e.currentTarget;
     apiServicePixabey.request = inputData.elements.query.value;
-   
+   if (apiServicePixabey.request === '') {
+        return alert('Введите слово для поиска')
+    }
     
     apiServicePixabey.getApiCards().then(photo => {
         clearPageOnNewSearch();
