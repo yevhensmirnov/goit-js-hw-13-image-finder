@@ -1,38 +1,48 @@
-const URL = "https://pixabay.com/api/"
-    const KEY = "22481682-2addccf9e408729062e90e5d3";
-    const perPage = "12";
+import { alert } from '@pnotify/core';
 
-export default class ApiServicePixabey {
+export default class apiService {
     constructor() {
-        this.searchRequest = '';
+        this.value = '';
         this.page = 1;
     }
 
-    async getApiCards() {
-    
-    
-    try {
-        const response = await fetch(`${URL}?image_type=photo&orientation=horizontal&q=${this.searchRequest}&page=${this.page}&per_page=${perPage}&key=${KEY}`);
-        const { hits }= await response.json();
-        this.incrementPage();
-        return hits;
-    } catch (e) {
-        return console.log(e);
-        }
+    getImage() {
+        const key = '22481682-2addccf9e408729062e90e5d3';
+        const baseUrl = 'https://pixabay.com/api/';
+        const url = `${baseUrl}?image_type=photo&orientation=horizontal&q=${this.value}
+        &page=${this.page}&per_page=12&key=${key}`;
+        return fetch(url)
+            .then(response => {
+                if (response.ok) { return response.json(); }
+            }).then(({ hits }) => {
+                if (hits.length === 0) {
+                    alert({
+                        text: 'Что-то пошло не так',
+                        width: '400px',
+                        animateSpeed: 'fast',
+                        delay: 2000,
+                    });
+                } else {
+                    this.addPage();
+                    return hits;
+                }
+              
+            });
     }
-    incrementPage() {
-    this.page += 1;
+
+    addPage() {
+        this.page += 1;
     }
-    
-    resetPage() {
+
+    restartValue() {
         this.page = 1;
     }
 
-    get request() {
-        return this.searchRequest;
+    get search() {
+        return this.value;
     }
 
-    set request(newRequest) {
-        this.searchRequest = newRequest;
+    set search(newValue) {
+        this.value = newValue;
     }
 }
